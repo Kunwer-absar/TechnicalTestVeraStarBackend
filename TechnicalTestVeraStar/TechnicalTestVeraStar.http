@@ -1,0 +1,6 @@
+@TechnicalTestVeraStar_HostAddress = http://localhost:5198
+
+GET {{TechnicalTestVeraStar_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
