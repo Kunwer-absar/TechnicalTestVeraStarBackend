@@ -23,49 +23,92 @@ public class DataController : ControllerBase
 
     [HttpGet("customerOrdersInfo")]
     public ActionResult<IEnumerable<CustomerOrderInfo>> GetCustomersOrderInfo()
+
     {
-        var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Customers.csv";
-        var customers = _dataService.ReadCSV<Customer>(serverPath);
+        IEnumerable<CustomerOrderInfo> customerOrderInfo = null;
+        try 
+        {
+            var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Customers.csv";
+            var customers = _dataService.ReadCSV<Customer>(serverPath);
 
-        serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Orders.csv";
-        var orders = _dataService.ReadCSV<Order>(serverPath);
+            serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Orders.csv";
+            var orders = _dataService.ReadCSV<Order>(serverPath);
 
-        serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\OrderItems.csv";
-        var orderItems = _dataService.ReadCSV<OrderItem>(serverPath);
-        var result = _getcustomerOrderInfo.GetCustomerOrderInfo<CustomerOrderInfo>(customers, orders, orderItems);
-        return Ok(result);
+            serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\OrderItems.csv";
+            var orderItems = _dataService.ReadCSV<OrderItem>(serverPath);
+            customerOrderInfo = _getcustomerOrderInfo.GetCustomerOrderInfo<CustomerOrderInfo>(customers, orders, orderItems);
+            return Ok(customerOrderInfo);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest(ex.Message);
+        }
+        
+        
     }
     [HttpPost("applyDiscount")]
    public ActionResult<IEnumerator<CustomerOrderInfo>> ApplyDiscount([FromBody]IEnumerable<CustomerOrderInfo> stateCustomerOrderInfo,int percentage) 
     {
-        double discount = Convert.ToDouble(percentage);
-        var result = _discount.ApplyDiscount(stateCustomerOrderInfo, discount) ;
-        return Ok(result);
+        try {
+            double discount = Convert.ToDouble(percentage);
+            var result = _discount.ApplyDiscount(stateCustomerOrderInfo, discount);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest(ex.Message);
+        }
+       
     }
 
     [HttpGet("customers")]
     public ActionResult<IEnumerable<Customer>> GetCustomers()
     {
-        var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Customers.csv";
-        var customers = _dataService.ReadCSV<Customer>(serverPath);
-        return Ok(customers);
-    }
+        try
+        {
+            var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Customers.csv";
+            var customers = _dataService.ReadCSV<Customer>(serverPath);
+            return Ok(customers);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest(ex.Message);
+        }
+        }
 
 
 
     [HttpGet("orders")]
     public ActionResult<IEnumerable<Order>> GetOrders()
     {
-        var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Orders.csv";
-        var orders = _dataService.ReadCSV<Order>(serverPath);
-        return Ok(orders);
+        try
+        {
+            var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\Orders.csv";
+            var orders = _dataService.ReadCSV<Order>(serverPath);
+            return Ok(orders);
+        }
+        catch (Exception ex) { 
+            Console.Write(ex.Message);
+            return BadRequest(ex.Message); 
+        }
     }
 
     [HttpGet("orderItems")]
     public ActionResult<IEnumerable<OrderItem>> GetOrderItems()
     {
-        var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\OrderItem.csv";
-        var orderItems = _dataService.ReadCSV<OrderItem>(serverPath);
-        return Ok(orderItems);
-    }
+        try
+        {
+            var serverPath = WebHostEnvironment.ContentRootPath + "\\MyAppData\\csv\\OrderItem.csv";
+            var orderItems = _dataService.ReadCSV<OrderItem>(serverPath);
+            return Ok(orderItems);
+        }
+        catch (Exception ex)
+        {
+            Console.Write(ex.Message);
+            return BadRequest(ex.Message);
+        }
+        }
 }
